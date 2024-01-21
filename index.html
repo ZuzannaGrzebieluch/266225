@@ -1,0 +1,1486 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>Warunki Gospodarcze i Hydrologiczne Złóż Piasków i Żwirów w Powiecie Oławskim</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/Powiat_Oawski_1.js"></script>
+        <script src="data/Droga_2.js"></script>
+        <script src="data/ObiektyWodne_3.js"></script>
+        <script src="data/Zabudowa_4.js"></script>
+        <script src="data/ZoaGeologiczne2022_5.js"></script>
+        <script src="data/NazwaZoa_6.js"></script>
+        <script src="data/OpisZoa_7.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        map.createPane('pane_OSMStandard_0');
+        map.getPane('pane_OSMStandard_0').style.zIndex = 400;
+        var layer_OSMStandard_0 = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OSMStandard_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors, CC-BY-SA</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OSMStandard_0;
+        map.addLayer(layer_OSMStandard_0);
+        function pop_Powiat_Oawski_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAZWA'] !== null ? autolinker.link(feature.properties['NAZWA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LMIESZKANC'] !== null ? autolinker.link(feature.properties['LMIESZKANC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['area'] !== null ? autolinker.link(feature.properties['area'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Powiat_Oawski_1_0(feature) {
+            switch(String(feature.properties['X_KOD'])) {
+                case 'część miasta':
+                    return {
+                pane: 'pane_Powiat_Oawski_1',
+                opacity: 1,
+                color: 'rgba(247,247,247,0.48)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(82,82,82,0.48)',
+                interactive: false,
+            }
+                    break;
+                case 'miasto':
+                    return {
+                pane: 'pane_Powiat_Oawski_1',
+                opacity: 1,
+                color: 'rgba(82,82,82,0.48)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(204,204,204,0.48)',
+                interactive: false,
+            }
+                    break;
+                case 'osada':
+                    return {
+                pane: 'pane_Powiat_Oawski_1',
+                opacity: 1,
+                color: 'rgba(56,128,54,0.48)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(77,175,74,0.024470588235294116)',
+                interactive: false,
+            }
+                    break;
+                case 'państwo':
+                    return {
+                pane: 'pane_Powiat_Oawski_1',
+                opacity: 1,
+                color: 'rgba(82,82,82,0.48)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(247,247,247,0.48)',
+                interactive: false,
+            }
+                    break;
+                case 'przysiółek':
+                    return {
+                pane: 'pane_Powiat_Oawski_1',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.48)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.48)',
+                interactive: false,
+            }
+                    break;
+                case 'wieś':
+                    return {
+                pane: 'pane_Powiat_Oawski_1',
+                opacity: 1,
+                color: 'rgba(82,82,82,0.48)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(204,204,204,0.48)',
+                interactive: false,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Powiat_Oawski_1');
+        map.getPane('pane_Powiat_Oawski_1').style.zIndex = 401;
+        map.getPane('pane_Powiat_Oawski_1').style['mix-blend-mode'] = 'normal';
+        var layer_Powiat_Oawski_1 = new L.geoJson(json_Powiat_Oawski_1, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_Powiat_Oawski_1',
+            layerName: 'layer_Powiat_Oawski_1',
+            pane: 'pane_Powiat_Oawski_1',
+            onEachFeature: pop_Powiat_Oawski_1,
+            style: style_Powiat_Oawski_1_0,
+        });
+        bounds_group.addLayer(layer_Powiat_Oawski_1);
+        map.addLayer(layer_Powiat_Oawski_1);
+        function pop_Droga_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['KATZARZ'] !== null ? autolinker.link(feature.properties['KATZARZ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Droga_2_0(feature) {
+            switch(String(feature.properties['KATZARZ'])) {
+                case 'gminna':
+                    return {
+                pane: 'pane_Droga_2',
+                opacity: 1,
+                color: 'rgba(102,38,212,0.592)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: false,
+            }
+                    break;
+                case 'krajowa':
+                    return {
+                pane: 'pane_Droga_2',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.592)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 8.0,
+                fillOpacity: 0,
+                interactive: false,
+            }
+                    break;
+                case 'powiatowa':
+                    return {
+                pane: 'pane_Droga_2',
+                opacity: 1,
+                color: 'rgba(255,255,255,0.592)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 3.0,
+                fillOpacity: 0,
+                interactive: false,
+            }
+                    break;
+                case 'wojewodzka':
+                    return {
+                pane: 'pane_Droga_2',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.592)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: false,
+            }
+                    break;
+                case 'zakladowa':
+                    return {
+                pane: 'pane_Droga_2',
+                opacity: 1,
+                color: 'rgba(232,138,97,0.592)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: false,
+            }
+                    break;
+                case 'inna':
+                    return {
+                pane: 'pane_Droga_2',
+                opacity: 1,
+                color: 'rgba(105,126,136,0.592)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1,
+                fillOpacity: 0,
+                interactive: false,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Droga_2');
+        map.getPane('pane_Droga_2').style.zIndex = 402;
+        map.getPane('pane_Droga_2').style['mix-blend-mode'] = 'normal';
+        var layer_Droga_2 = new L.geoJson(json_Droga_2, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_Droga_2',
+            layerName: 'layer_Droga_2',
+            pane: 'pane_Droga_2',
+            onEachFeature: pop_Droga_2,
+            style: style_Droga_2_0,
+        });
+        bounds_group.addLayer(layer_Droga_2);
+        map.addLayer(layer_Droga_2);
+        function pop_ObiektyWodne_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['RODZAJ'] !== null ? autolinker.link(feature.properties['RODZAJ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_ObiektyWodne_3_0(feature) {
+            switch(String(feature.properties['X_KOD'])) {
+                case 'rzeka':
+                    return {
+                pane: 'pane_ObiektyWodne_3',
+                opacity: 1,
+                color: 'rgba(100,152,210,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 3.0,
+                fillOpacity: 0,
+                interactive: false,
+            }
+                    break;
+                case 'strumień, potok lub struga':
+                    return {
+                pane: 'pane_ObiektyWodne_3',
+                opacity: 1,
+                color: 'rgba(166,206,227,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: false,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_ObiektyWodne_3');
+        map.getPane('pane_ObiektyWodne_3').style.zIndex = 403;
+        map.getPane('pane_ObiektyWodne_3').style['mix-blend-mode'] = 'normal';
+        var layer_ObiektyWodne_3 = new L.geoJson(json_ObiektyWodne_3, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_ObiektyWodne_3',
+            layerName: 'layer_ObiektyWodne_3',
+            pane: 'pane_ObiektyWodne_3',
+            onEachFeature: pop_ObiektyWodne_3,
+            style: style_ObiektyWodne_3_0,
+        });
+        bounds_group.addLayer(layer_ObiektyWodne_3);
+        map.addLayer(layer_ObiektyWodne_3);
+        function pop_Zabudowa_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['RODZAJ'] !== null ? autolinker.link(feature.properties['RODZAJ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Zabudowa_4_0(feature) {
+            switch(String(feature.properties['RODZAJ'])) {
+                case 'handlowoUslugowa':
+                    return {
+                pane: 'pane_Zabudowa_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(47,47,47,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'jednorodzinna':
+                    return {
+                pane: 'pane_Zabudowa_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,51,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'pozostalaZabudowa':
+                    return {
+                pane: 'pane_Zabudowa_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,127,0,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'przemyslowoSkladowa':
+                    return {
+                pane: 'pane_Zabudowa_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(132,58,211,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'wielorodzinna':
+                    return {
+                pane: 'pane_Zabudowa_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,138,70,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Zabudowa_4');
+        map.getPane('pane_Zabudowa_4').style.zIndex = 404;
+        map.getPane('pane_Zabudowa_4').style['mix-blend-mode'] = 'normal';
+        var layer_Zabudowa_4 = new L.geoJson(json_Zabudowa_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Zabudowa_4',
+            layerName: 'layer_Zabudowa_4',
+            pane: 'pane_Zabudowa_4',
+            onEachFeature: pop_Zabudowa_4,
+            style: style_Zabudowa_4_0,
+        });
+        bounds_group.addLayer(layer_Zabudowa_4);
+        map.addLayer(layer_Zabudowa_4);
+        function pop_ZoaGeologiczne2022_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Nazwa Złoża'] !== null ? autolinker.link(feature.properties['Nazwa Złoża'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Rodzaj Złoża'] !== null ? autolinker.link(feature.properties['Rodzaj Złoża'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Złoża Geologiczne 2022'] !== null ? autolinker.link(feature.properties['Złoża Geologiczne 2022'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_ZoaGeologiczne2022_5_0(feature) {
+            if (feature.properties['Arkusz1__Z'] >= 41.000000 && feature.properties['Arkusz1__Z'] <= 8123.500000 ) {
+                return {
+                pane: 'pane_ZoaGeologiczne2022_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(48,18,59,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 8123.500000 && feature.properties['Arkusz1__Z'] <= 16206.000000 ) {
+                return {
+                pane: 'pane_ZoaGeologiczne2022_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,98,216,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 16206.000000 && feature.properties['Arkusz1__Z'] <= 24288.500000 ) {
+                return {
+                pane: 'pane_ZoaGeologiczne2022_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(53,171,248,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 24288.500000 && feature.properties['Arkusz1__Z'] <= 32371.000000 ) {
+                return {
+                pane: 'pane_ZoaGeologiczne2022_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(27,229,181,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 32371.000000 && feature.properties['Arkusz1__Z'] <= 40453.500000 ) {
+                return {
+                pane: 'pane_ZoaGeologiczne2022_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(116,254,93,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 40453.500000 && feature.properties['Arkusz1__Z'] <= 48536.000000 ) {
+                return {
+                pane: 'pane_ZoaGeologiczne2022_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(201,239,52,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 48536.000000 && feature.properties['Arkusz1__Z'] <= 56618.500000 ) {
+                return {
+                pane: 'pane_ZoaGeologiczne2022_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,185,56,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 56618.500000 && feature.properties['Arkusz1__Z'] <= 64701.000000 ) {
+                return {
+                pane: 'pane_ZoaGeologiczne2022_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(245,105,24,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 64701.000000 && feature.properties['Arkusz1__Z'] <= 72783.500000 ) {
+                return {
+                pane: 'pane_ZoaGeologiczne2022_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(201,41,3,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 72783.500000 && feature.properties['Arkusz1__Z'] <= 80866.000000 ) {
+                return {
+                pane: 'pane_ZoaGeologiczne2022_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(122,4,3,1.0)',
+                interactive: false,
+            }
+            }
+        }
+        map.createPane('pane_ZoaGeologiczne2022_5');
+        map.getPane('pane_ZoaGeologiczne2022_5').style.zIndex = 405;
+        map.getPane('pane_ZoaGeologiczne2022_5').style['mix-blend-mode'] = 'normal';
+        var layer_ZoaGeologiczne2022_5 = new L.geoJson(json_ZoaGeologiczne2022_5, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_ZoaGeologiczne2022_5',
+            layerName: 'layer_ZoaGeologiczne2022_5',
+            pane: 'pane_ZoaGeologiczne2022_5',
+            onEachFeature: pop_ZoaGeologiczne2022_5,
+            style: style_ZoaGeologiczne2022_5_0,
+        });
+        bounds_group.addLayer(layer_ZoaGeologiczne2022_5);
+        map.addLayer(layer_ZoaGeologiczne2022_5);
+        function pop_NazwaZoa_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Nazwa Złoża'] !== null ? autolinker.link(feature.properties['Nazwa Złoża'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Rodzaj Złoża'] !== null ? autolinker.link(feature.properties['Rodzaj Złoża'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Złoża Geologiczne 2022'] !== null ? autolinker.link(feature.properties['Złoża Geologiczne 2022'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_NazwaZoa_6_0(feature) {
+            switch(String(feature.properties['Nazwa Złoża'])) {
+                case 'Brzezinki':
+                    return {
+                pane: 'pane_NazwaZoa_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(48,18,59,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Brzezinki I':
+                    return {
+                pane: 'pane_NazwaZoa_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(65,71,173,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Bystrzyca Oławska':
+                    return {
+                pane: 'pane_NazwaZoa_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(71,119,239,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Bystrzyca Oławska I':
+                    return {
+                pane: 'pane_NazwaZoa_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(56,165,251,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Chwałowice I':
+                    return {
+                pane: 'pane_NazwaZoa_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(27,208,213,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Jankowice':
+                    return {
+                pane: 'pane_NazwaZoa_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(38,237,166,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Łęg':
+                    return {
+                pane: 'pane_NazwaZoa_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(100,253,106,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Miłocice':
+                    return {
+                pane: 'pane_NazwaZoa_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(164,252,60,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Miłoszyce':
+                    return {
+                pane: 'pane_NazwaZoa_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(211,232,53,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Minkowice Oławskie':
+                    return {
+                pane: 'pane_NazwaZoa_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(245,198,58,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Minkowice Oławskie I':
+                    return {
+                pane: 'pane_NazwaZoa_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,153,44,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Nowy Dwór':
+                    return {
+                pane: 'pane_NazwaZoa_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(243,99,21,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Siedlce':
+                    return {
+                pane: 'pane_NazwaZoa_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(217,56,7,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Siedlce-Północ':
+                    return {
+                pane: 'pane_NazwaZoa_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(176,25,1,1.0)',
+                interactive: false,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_NazwaZoa_6');
+        map.getPane('pane_NazwaZoa_6').style.zIndex = 406;
+        map.getPane('pane_NazwaZoa_6').style['mix-blend-mode'] = 'darken';
+        var layer_NazwaZoa_6 = new L.geoJson(json_NazwaZoa_6, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_NazwaZoa_6',
+            layerName: 'layer_NazwaZoa_6',
+            pane: 'pane_NazwaZoa_6',
+            onEachFeature: pop_NazwaZoa_6,
+            style: style_NazwaZoa_6_0,
+        });
+        bounds_group.addLayer(layer_NazwaZoa_6);
+        map.addLayer(layer_NazwaZoa_6);
+        function pop_OpisZoa_7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                        <td colspan="2"><strong>Nazwa Złoża</strong><br />' + (feature.properties['Nazwa Złoża'] !== null ? autolinker.link(feature.properties['Nazwa Złoża'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Rodzaj Złoża</th>\
+                        <td>' + (feature.properties['Rodzaj Złoża'] !== null ? autolinker.link(feature.properties['Rodzaj Złoża'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Złoża Geologiczne 2022</th>\
+                        <td>' + (feature.properties['Złoża Geologiczne 2022'] !== null ? autolinker.link(feature.properties['Złoża Geologiczne 2022'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_OpisZoa_7_0(feature) {
+            if (feature.properties['Arkusz1__Z'] >= 41.000000 && feature.properties['Arkusz1__Z'] <= 8123.500000 ) {
+                return {
+                pane: 'pane_OpisZoa_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(48,18,59,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 8123.500000 && feature.properties['Arkusz1__Z'] <= 16206.000000 ) {
+                return {
+                pane: 'pane_OpisZoa_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,98,216,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 16206.000000 && feature.properties['Arkusz1__Z'] <= 24288.500000 ) {
+                return {
+                pane: 'pane_OpisZoa_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(53,171,248,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 24288.500000 && feature.properties['Arkusz1__Z'] <= 32371.000000 ) {
+                return {
+                pane: 'pane_OpisZoa_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(27,229,181,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 32371.000000 && feature.properties['Arkusz1__Z'] <= 40453.500000 ) {
+                return {
+                pane: 'pane_OpisZoa_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(116,254,93,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 40453.500000 && feature.properties['Arkusz1__Z'] <= 48536.000000 ) {
+                return {
+                pane: 'pane_OpisZoa_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(201,239,52,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 48536.000000 && feature.properties['Arkusz1__Z'] <= 56618.500000 ) {
+                return {
+                pane: 'pane_OpisZoa_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,185,56,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 56618.500000 && feature.properties['Arkusz1__Z'] <= 64701.000000 ) {
+                return {
+                pane: 'pane_OpisZoa_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(245,105,24,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 64701.000000 && feature.properties['Arkusz1__Z'] <= 72783.500000 ) {
+                return {
+                pane: 'pane_OpisZoa_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(201,41,3,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Arkusz1__Z'] >= 72783.500000 && feature.properties['Arkusz1__Z'] <= 80866.000000 ) {
+                return {
+                pane: 'pane_OpisZoa_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(122,4,3,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_OpisZoa_7');
+        map.getPane('pane_OpisZoa_7').style.zIndex = 407;
+        map.getPane('pane_OpisZoa_7').style['mix-blend-mode'] = 'darken';
+        var layer_OpisZoa_7 = new L.geoJson(json_OpisZoa_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_OpisZoa_7',
+            layerName: 'layer_OpisZoa_7',
+            pane: 'pane_OpisZoa_7',
+            onEachFeature: pop_OpisZoa_7,
+            style: style_OpisZoa_7_0,
+        });
+        bounds_group.addLayer(layer_OpisZoa_7);
+        map.addLayer(layer_OpisZoa_7);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>Warunki Gospodarcze i Hydrologiczne Złóż Piasków i Żwirów w Powiecie Oławskim</h2>';
+            };
+            title.addTo(map);
+            var abstract = new L.Control({'position':'topright'});
+            abstract.onAdd = function (map) {
+                this._div = L.DomUtil.create('div',
+                'leaflet-control abstract');
+                this._div.id = 'abstract'
+
+                    abstract.show();
+                    return this._div;
+                };
+                abstract.show = function () {
+                    this._div.classList.remove("abstract");
+                    this._div.classList.add("abstractUncollapsed");
+                    this._div.innerHTML = 'Mapa w programie QGIS przedstawia złoża w powiecie oławskim, koncentrując się jednocześnie na warunkach gospodarczych i hydrologicznych regionu<br />Twórca: Zuzanna Grzebieluch';
+            };
+            abstract.addTo(map);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'Opis Złoża<br /><table><tr><td style="text-align: center;"><img src="legend/OpisZoa_7_4181240.png" /></td><td>41 - 8124</td></tr><tr><td style="text-align: center;"><img src="legend/OpisZoa_7_8124162061.png" /></td><td>8124 - 16206</td></tr><tr><td style="text-align: center;"><img src="legend/OpisZoa_7_16206242892.png" /></td><td>16206 - 24289</td></tr><tr><td style="text-align: center;"><img src="legend/OpisZoa_7_24289323713.png" /></td><td>24289 - 32371</td></tr><tr><td style="text-align: center;"><img src="legend/OpisZoa_7_32371404544.png" /></td><td>32371 - 40454</td></tr><tr><td style="text-align: center;"><img src="legend/OpisZoa_7_40454485365.png" /></td><td>40454 - 48536</td></tr><tr><td style="text-align: center;"><img src="legend/OpisZoa_7_48536566196.png" /></td><td>48536 - 56619</td></tr><tr><td style="text-align: center;"><img src="legend/OpisZoa_7_56619647017.png" /></td><td>56619 - 64701</td></tr><tr><td style="text-align: center;"><img src="legend/OpisZoa_7_64701727848.png" /></td><td>64701 - 72784</td></tr><tr><td style="text-align: center;"><img src="legend/OpisZoa_7_72784808669.png" /></td><td>72784 - 80866</td></tr></table>': layer_OpisZoa_7,'Nazwa Złoża<br /><table><tr><td style="text-align: center;"><img src="legend/NazwaZoa_6_Brzezinki0.png" /></td><td>Brzezinki</td></tr><tr><td style="text-align: center;"><img src="legend/NazwaZoa_6_BrzezinkiI1.png" /></td><td>Brzezinki I</td></tr><tr><td style="text-align: center;"><img src="legend/NazwaZoa_6_BystrzycaOławska2.png" /></td><td>Bystrzyca Oławska</td></tr><tr><td style="text-align: center;"><img src="legend/NazwaZoa_6_BystrzycaOławskaI3.png" /></td><td>Bystrzyca Oławska I</td></tr><tr><td style="text-align: center;"><img src="legend/NazwaZoa_6_ChwałowiceI4.png" /></td><td>Chwałowice I</td></tr><tr><td style="text-align: center;"><img src="legend/NazwaZoa_6_Jankowice5.png" /></td><td>Jankowice</td></tr><tr><td style="text-align: center;"><img src="legend/NazwaZoa_6_Łęg6.png" /></td><td>Łęg</td></tr><tr><td style="text-align: center;"><img src="legend/NazwaZoa_6_Miłocice7.png" /></td><td>Miłocice</td></tr><tr><td style="text-align: center;"><img src="legend/NazwaZoa_6_Miłoszyce8.png" /></td><td>Miłoszyce</td></tr><tr><td style="text-align: center;"><img src="legend/NazwaZoa_6_MinkowiceOławskie9.png" /></td><td>Minkowice Oławskie</td></tr><tr><td style="text-align: center;"><img src="legend/NazwaZoa_6_MinkowiceOławskieI10.png" /></td><td>Minkowice Oławskie I</td></tr><tr><td style="text-align: center;"><img src="legend/NazwaZoa_6_NowyDwór11.png" /></td><td>Nowy Dwór</td></tr><tr><td style="text-align: center;"><img src="legend/NazwaZoa_6_Siedlce12.png" /></td><td>Siedlce</td></tr><tr><td style="text-align: center;"><img src="legend/NazwaZoa_6_SiedlcePółnoc13.png" /></td><td>Siedlce-Północ</td></tr></table>': layer_NazwaZoa_6,'Złoża Geologiczne 2022<br /><table><tr><td style="text-align: center;"><img src="legend/ZoaGeologiczne2022_5_4181240.png" /></td><td>41 - 8124</td></tr><tr><td style="text-align: center;"><img src="legend/ZoaGeologiczne2022_5_8124162061.png" /></td><td>8124 - 16206</td></tr><tr><td style="text-align: center;"><img src="legend/ZoaGeologiczne2022_5_16206242892.png" /></td><td>16206 - 24289</td></tr><tr><td style="text-align: center;"><img src="legend/ZoaGeologiczne2022_5_24289323713.png" /></td><td>24289 - 32371</td></tr><tr><td style="text-align: center;"><img src="legend/ZoaGeologiczne2022_5_32371404544.png" /></td><td>32371 - 40454</td></tr><tr><td style="text-align: center;"><img src="legend/ZoaGeologiczne2022_5_40454485365.png" /></td><td>40454 - 48536</td></tr><tr><td style="text-align: center;"><img src="legend/ZoaGeologiczne2022_5_48536566196.png" /></td><td>48536 - 56619</td></tr><tr><td style="text-align: center;"><img src="legend/ZoaGeologiczne2022_5_56619647017.png" /></td><td>56619 - 64701</td></tr><tr><td style="text-align: center;"><img src="legend/ZoaGeologiczne2022_5_64701727848.png" /></td><td>64701 - 72784</td></tr><tr><td style="text-align: center;"><img src="legend/ZoaGeologiczne2022_5_72784808669.png" /></td><td>72784 - 80866</td></tr></table>': layer_ZoaGeologiczne2022_5,'Zabudowa<br /><table><tr><td style="text-align: center;"><img src="legend/Zabudowa_4_handlowoUslugowa0.png" /></td><td>handlowoUslugowa</td></tr><tr><td style="text-align: center;"><img src="legend/Zabudowa_4_jednorodzinna1.png" /></td><td>jednorodzinna</td></tr><tr><td style="text-align: center;"><img src="legend/Zabudowa_4_pozostalaZabudowa2.png" /></td><td>pozostalaZabudowa</td></tr><tr><td style="text-align: center;"><img src="legend/Zabudowa_4_przemyslowoSkladowa3.png" /></td><td>przemyslowoSkladowa</td></tr><tr><td style="text-align: center;"><img src="legend/Zabudowa_4_wielorodzinna4.png" /></td><td>wielorodzinna</td></tr></table>': layer_Zabudowa_4,'Obiekty Wodne<br /><table><tr><td style="text-align: center;"><img src="legend/ObiektyWodne_3_rzeka0.png" /></td><td>rzeka</td></tr><tr><td style="text-align: center;"><img src="legend/ObiektyWodne_3_strumieńpotoklubstruga1.png" /></td><td>strumień, potok lub struga</td></tr></table>': layer_ObiektyWodne_3,'Droga<br /><table><tr><td style="text-align: center;"><img src="legend/Droga_2_gminna0.png" /></td><td>gminna</td></tr><tr><td style="text-align: center;"><img src="legend/Droga_2_krajowa1.png" /></td><td>krajowa</td></tr><tr><td style="text-align: center;"><img src="legend/Droga_2_powiatowa2.png" /></td><td>powiatowa</td></tr><tr><td style="text-align: center;"><img src="legend/Droga_2_wojewodzka3.png" /></td><td>wojewodzka</td></tr><tr><td style="text-align: center;"><img src="legend/Droga_2_zakladowa4.png" /></td><td>zakladowa</td></tr><tr><td style="text-align: center;"><img src="legend/Droga_2_inna5.png" /></td><td>inna</td></tr></table>': layer_Droga_2,'Powiat_Oławski<br /><table><tr><td style="text-align: center;"><img src="legend/Powiat_Oawski_1_częśćmiasta0.png" /></td><td>część miasta</td></tr><tr><td style="text-align: center;"><img src="legend/Powiat_Oawski_1_miasto1.png" /></td><td>miasto</td></tr><tr><td style="text-align: center;"><img src="legend/Powiat_Oawski_1_osada2.png" /></td><td>osada</td></tr><tr><td style="text-align: center;"><img src="legend/Powiat_Oawski_1_państwo3.png" /></td><td>państwo</td></tr><tr><td style="text-align: center;"><img src="legend/Powiat_Oawski_1_przysiółek4.png" /></td><td>przysiółek</td></tr><tr><td style="text-align: center;"><img src="legend/Powiat_Oawski_1_wieś5.png" /></td><td>wieś</td></tr></table>': layer_Powiat_Oawski_1,"OSM Standard": layer_OSMStandard_0,}).addTo(map);
+        setBounds();
+        var i = 0;
+        layer_NazwaZoa_6.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['ZlozaOla_1'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Open Sans\', sans-serif;">' + layer.feature.properties['ZlozaOla_1']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_NazwaZoa_6'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_OpisZoa_7.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['ZlozaOla_1'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Open Sans\', sans-serif;">' + layer.feature.properties['ZlozaOla_1']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_OpisZoa_7'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        map.addControl(new L.Control.Search({
+            layer: layer_ZoaGeologiczne2022_5,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Nazwa Złoża'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"Nazwa Złoża": "str","Rodzaj Złoża": "str","Złoża Geologiczne 2022": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+        var i = 0;
+        layer_NazwaZoa_6.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['ZlozaOla_1'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Open Sans\', sans-serif;">' + layer.feature.properties['ZlozaOla_1']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_NazwaZoa_6'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_OpisZoa_7.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['ZlozaOla_1'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Open Sans\', sans-serif;">' + layer.feature.properties['ZlozaOla_1']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_OpisZoa_7'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_NazwaZoa = document.createElement('div');
+            div_NazwaZoa.id = "div_NazwaZoa";
+            div_NazwaZoa.className= "filterselect";
+            document.getElementById("menu").appendChild(div_NazwaZoa);
+            sel_NazwaZoa = document.createElement('select');
+            sel_NazwaZoa.multiple = true;
+            sel_NazwaZoa.size = 10;
+            sel_NazwaZoa.id = "sel_NazwaZoa";
+            var NazwaZoa_options_str = "<option value='' unselected></option>";
+            sel_NazwaZoa.onchange = function(){filterFunc()};
+            NazwaZoa_options_str  += '<option value="Brzezinki">Brzezinki</option>';
+            NazwaZoa_options_str  += '<option value="Brzezinki I">Brzezinki I</option>';
+            NazwaZoa_options_str  += '<option value="Bystrzyca Oławska">Bystrzyca Oławska</option>';
+            NazwaZoa_options_str  += '<option value="Bystrzyca Oławska I">Bystrzyca Oławska I</option>';
+            NazwaZoa_options_str  += '<option value="Chwałowice I">Chwałowice I</option>';
+            NazwaZoa_options_str  += '<option value="Jankowice">Jankowice</option>';
+            NazwaZoa_options_str  += '<option value="Minkowice Oławskie">Minkowice Oławskie</option>';
+            NazwaZoa_options_str  += '<option value="Minkowice Oławskie I">Minkowice Oławskie I</option>';
+            NazwaZoa_options_str  += '<option value="Miłocice">Miłocice</option>';
+            NazwaZoa_options_str  += '<option value="Miłoszyce">Miłoszyce</option>';
+            NazwaZoa_options_str  += '<option value="Nowy Dwór">Nowy Dwór</option>';
+            NazwaZoa_options_str  += '<option value="Siedlce">Siedlce</option>';
+            NazwaZoa_options_str  += '<option value="Siedlce-Północ">Siedlce-Północ</option>';
+            NazwaZoa_options_str  += '<option value="Łęg">Łęg</option>';
+            sel_NazwaZoa.innerHTML = NazwaZoa_options_str;
+            div_NazwaZoa.appendChild(sel_NazwaZoa);
+            var lab_NazwaZoa = document.createElement('div');
+            lab_NazwaZoa.innerHTML = 'Nazwa Złoża';
+            lab_NazwaZoa.className = 'filterlabel';
+            div_NazwaZoa.appendChild(lab_NazwaZoa);
+            var reset_NazwaZoa = document.createElement('div');
+            reset_NazwaZoa.innerHTML = 'clear filter';
+            reset_NazwaZoa.className = 'filterlabel';
+            reset_NazwaZoa.onclick = function() {
+                var options = document.getElementById("sel_NazwaZoa").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_NazwaZoa.appendChild(reset_NazwaZoa);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_RodzajZoa = document.createElement('div');
+            div_RodzajZoa.id = "div_RodzajZoa";
+            div_RodzajZoa.className= "filterselect";
+            document.getElementById("menu").appendChild(div_RodzajZoa);
+            sel_RodzajZoa = document.createElement('select');
+            sel_RodzajZoa.multiple = true;
+            sel_RodzajZoa.size = 2;
+            sel_RodzajZoa.id = "sel_RodzajZoa";
+            var RodzajZoa_options_str = "<option value='' unselected></option>";
+            sel_RodzajZoa.onchange = function(){filterFunc()};
+            RodzajZoa_options_str  += '<option value="PIASKI I ŻWIRY">PIASKI I ŻWIRY</option>';
+            RodzajZoa_options_str  += '<option value="PIASKI KWARCOWE D/P CEGŁY WAPIENNO-PIASKOWEJ">PIASKI KWARCOWE D/P CEGŁY WAPIENNO-PIASKOWEJ</option>';
+            sel_RodzajZoa.innerHTML = RodzajZoa_options_str;
+            div_RodzajZoa.appendChild(sel_RodzajZoa);
+            var lab_RodzajZoa = document.createElement('div');
+            lab_RodzajZoa.innerHTML = 'Rodzaj Złoża';
+            lab_RodzajZoa.className = 'filterlabel';
+            div_RodzajZoa.appendChild(lab_RodzajZoa);
+            var reset_RodzajZoa = document.createElement('div');
+            reset_RodzajZoa.innerHTML = 'clear filter';
+            reset_RodzajZoa.className = 'filterlabel';
+            reset_RodzajZoa.onclick = function() {
+                var options = document.getElementById("sel_RodzajZoa").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_RodzajZoa.appendChild(reset_RodzajZoa);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_ZoaGeologiczne2022 = document.createElement('div');
+            div_ZoaGeologiczne2022.id = "div_ZoaGeologiczne2022";
+            div_ZoaGeologiczne2022.className= "filterselect";
+            document.getElementById("menu").appendChild(div_ZoaGeologiczne2022);
+            sel_ZoaGeologiczne2022 = document.createElement('select');
+            sel_ZoaGeologiczne2022.multiple = true;
+            sel_ZoaGeologiczne2022.size = 10;
+            sel_ZoaGeologiczne2022.id = "sel_ZoaGeologiczne2022";
+            var ZoaGeologiczne2022_options_str = "<option value='' unselected></option>";
+            sel_ZoaGeologiczne2022.onchange = function(){filterFunc()};
+            ZoaGeologiczne2022_options_str  += '<option value="1189">1189</option>';
+            ZoaGeologiczne2022_options_str  += '<option value="12285">12285</option>';
+            ZoaGeologiczne2022_options_str  += '<option value="12330">12330</option>';
+            ZoaGeologiczne2022_options_str  += '<option value="1357">1357</option>';
+            ZoaGeologiczne2022_options_str  += '<option value="16804">16804</option>';
+            ZoaGeologiczne2022_options_str  += '<option value="169">169</option>';
+            ZoaGeologiczne2022_options_str  += '<option value="170">170</option>';
+            ZoaGeologiczne2022_options_str  += '<option value="1774">1774</option>';
+            ZoaGeologiczne2022_options_str  += '<option value="2255">2255</option>';
+            ZoaGeologiczne2022_options_str  += '<option value="3515">3515</option>';
+            ZoaGeologiczne2022_options_str  += '<option value="41">41</option>';
+            ZoaGeologiczne2022_options_str  += '<option value="469">469</option>';
+            ZoaGeologiczne2022_options_str  += '<option value="80866">80866</option>';
+            sel_ZoaGeologiczne2022.innerHTML = ZoaGeologiczne2022_options_str;
+            div_ZoaGeologiczne2022.appendChild(sel_ZoaGeologiczne2022);
+            var lab_ZoaGeologiczne2022 = document.createElement('div');
+            lab_ZoaGeologiczne2022.innerHTML = 'Złoża Geologiczne 2022';
+            lab_ZoaGeologiczne2022.className = 'filterlabel';
+            div_ZoaGeologiczne2022.appendChild(lab_ZoaGeologiczne2022);
+            var reset_ZoaGeologiczne2022 = document.createElement('div');
+            reset_ZoaGeologiczne2022.innerHTML = 'clear filter';
+            reset_ZoaGeologiczne2022.className = 'filterlabel';
+            reset_ZoaGeologiczne2022.onclick = function() {
+                var options = document.getElementById("sel_ZoaGeologiczne2022").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_ZoaGeologiczne2022.appendChild(reset_ZoaGeologiczne2022);
+        resetLabels([layer_NazwaZoa_6,layer_OpisZoa_7]);
+        map.on("zoomend", function(){
+            resetLabels([layer_NazwaZoa_6,layer_OpisZoa_7]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_NazwaZoa_6,layer_OpisZoa_7]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_NazwaZoa_6,layer_OpisZoa_7]);
+        });
+        var scale = L.control.scale();
+        scale.addTo(map);
+        </script>
+    </body>
+</html>
